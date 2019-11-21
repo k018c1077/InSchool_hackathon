@@ -145,29 +145,29 @@
 <!--contact section -->
 
 <section id="contact" class="section text-center">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-8 col-md-offset-2 ">
-        <h2 class="section-title">Get In Touch <span>Say Hello!</span></h2>
-        <p class="section-intro">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae. </p>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-8 col-md-offset-2 ">
+          <h2 class="section-title">Get In Touch <span>Say Hello!</span></h2>
+          <p class="section-intro">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae. </p>
+        </div>
       </div>
+      
+      <!--contact form start-->
+      <div class="col-md-6 col-md-offset-3 conForm">
+        <div id="message"></div>
+        <form method="post" action="php/contact.php" name="cform" id="cform">
+          <input name="name" id="name" type="text" class="col-xs-12 col-sm-12 col-md-12 col-lg-12" placeholder="Your name..." >
+          <input name="email" id="email" type="email" class=" col-xs-12 col-sm-12 col-md-12 col-lg-12 noMarr" placeholder="Email Address..." >
+          <textarea name="comments" id="comments" cols="" rows="" class="col-xs-12 col-sm-12 col-md-12 col-lg-12" placeholder="Project Details..."></textarea>
+          <input type="submit" id="submit" name="send" class="submitBnt" value="Send">
+          <div id="simple-msg"></div>
+        </form>
+      </div>
+      <!--contact form end--> 
     </div>
-    
-    <!--contact form start-->
-    <div class="col-md-6 col-md-offset-3 conForm">
-      <div id="message"></div>
-      <form method="post" action="php/contact.php" name="cform" id="cform">
-        <input name="name" id="name" type="text" class="col-xs-12 col-sm-12 col-md-12 col-lg-12" placeholder="Your name..." >
-        <input name="email" id="email" type="email" class=" col-xs-12 col-sm-12 col-md-12 col-lg-12 noMarr" placeholder="Email Address..." >
-        <textarea name="comments" id="comments" cols="" rows="" class="col-xs-12 col-sm-12 col-md-12 col-lg-12" placeholder="Project Details..."></textarea>
-        <input type="submit" id="submit" name="send" class="submitBnt" value="Send">
-        <div id="simple-msg"></div>
-      </form>
-    </div>
-    <!--contact form end--> 
-  </div>
-</section>
-
+  </section>
+  
 <!--contact section --> 
 <!-- footer section-->
 <footer class="section footer">
