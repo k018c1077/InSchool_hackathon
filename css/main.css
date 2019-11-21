@@ -318,7 +318,7 @@ ul li {
 -------------------------------------------------------------------------------*/
 .banner {
 	background-color: #3b3be8;
-	min-height: 750px;
+	min-height: 100vh;
 }
 .banner-text {
 	padding-top: 35%;
