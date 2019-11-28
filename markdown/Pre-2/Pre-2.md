@@ -18,10 +18,10 @@
 
 ## 1.jQueryを利用してみよう
 
-今回の開発ではAjaxという技術を使ってデータを取得します。
-前回、PHPを使って、サイトにアクセスするたびにデータが更新されるページを作成していきました。しかし、Ajaxを利用すると、ページを更新させずにデータを取得して、画面を書き換えることができるようになります。
+今回の開発では**Ajax**という技術を使ってデータを取得します。
+前回、PHPを使って、サイトにアクセスするたびにデータが更新されるページを作成していきました。しかし、Ajaxを利用すると、**ページを更新させずに**データを取得して、画面を書き換えることができるようになります。
 
-Ajaxを利用するには、JavaScriptでコードを書く必要があります。しかし、JavaScriptをそのまま書いていると結構な手間がかかります。そのため、今回はAjaxを簡単に行うことできる「jQuery」というライブラリを利用して作成していきたいと思います。
+Ajaxを利用するには、**JavaScript**でコードを書く必要があります。しかし、JavaScriptをそのまま書いていると結構な手間がかかります。そのため、今回はAjaxを簡単に行うことできる**jQuery**というライブラリを利用して作成していきたいと思います。
 
 まずはjQueryをサイトに組み込んでいきます。
 組み込むと言っても特段難しいことは無いので、サクッと導入してしまいましょう。
@@ -32,16 +32,16 @@ Ajaxを利用するには、JavaScriptでコードを書く必要があります
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>書籍検索サイト</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>書籍検索サイト</title>
 </head>
 <body>
-    <h1>書籍検索サイト</h1>
-    <input id="isbn" type="text">
-    <input id="btn" type="button" value="検索"><br />
-    <span id="result"></span>
+  <h1>書籍検索サイト</h1>
+  <input id="isbn" type="text">
+  <input id="btn" type="button" value="検索"><br />
+  <span id="result"></span>
 </body>
 </html>
 ```
@@ -124,9 +124,9 @@ ajax関数では引数に連想配列で取得の方法を指定できます。
 
 ```
 $.ajax({
-	url: 'https://www.googleapis.com/books/v1/volumes?q=isbn:' + isbn,
-	type: 'GET',
-	dataType:'json'
+  url: 'https://www.googleapis.com/books/v1/volumes?q=isbn:' + isbn,
+  type: 'GET',
+  dataType:'json'
 })
 ```
 
@@ -142,11 +142,11 @@ $.ajax({
 
 ```
 }).done( function(data){
-    //ここに書いた処理が実行される
+  //ここに書いた処理が実行される
 })
 ```
 
-詳しいことは書きませんが、JavaScriptでは関数も値なので、引数に関数を書くことができます。```function(){}```の部分がそうですね。```.done```の引数に関数を指定しておくと、データを取得した時に**後でその関数を勝手に実行してくれます。**このような関数を**コールバック関数**といいます。説明すると長くなるので興味があれば各自調べてみてください。
+詳しいことは書きませんが、JavaScriptでは関数も値なので、引数に関数を書くことができます。```function(){}```の部分がそうですね。```.done```の引数に関数を指定しておくと、データを取得した時に**後でその関数を勝手に実行してくれます**。このような関数を**コールバック関数**といいます。説明すると長くなるので興味があれば各自検索して調べてみてください。
 
 ajax関数で取得したデータはコールバック関数内の```data```に格納されています。
 jQueryでは、JSONデータを取得すると自動的にJSONデータを連想配列に変換してくれます。（今回のコードでは見やすくするために ```JSON.stringfy()``` で文字列に変換しています。）
@@ -168,6 +168,49 @@ data['items'][0]['volumeInfo']['title'];
 
 後はこのデータをHTMLに反映させれば動的にページを書き換えることが可能になります。
 
+ただし、このコードには一つ問題があります。それは、JavaScriptはサイトを開いた後もConsoleで実行出来てしまうため、ユーザが他のサーバの悪質なAPIを叩いて、サイトを改ざんしてしまう可能性があるということです。
+
+そのため、ブラウザはCORS(Cross-Origin Resource Sharing)という規則にしたがって、基本的にJavaScriptではクロスドメイン通信は出来ないようになっています。前回の教科書のコラムにも書いてあります。Google Books APIはサーバ側でクロスドメイン通信を許可する設定になっているので直接アクセス出来てしまいますが、それはGoogleが世界からある程度の信頼を得ているから出来る事で、今はGoogle以外のAPIもたくさんあります。そもそもGoogle APIにだって脆弱性が潜んでいてもおかしくはありません。
+
+ではどうするのか？
+
+実は結構簡単です。直接外部のデータをJavaScriptで受け取るのが危険ならば、PHPで受け取ってしまえばいいのです。JavaScriptには**自分のサーバにだけにアクセス**させて、PHPがAPIを叩いて受け取ったデータをそのままJavaScriptに横流ししてしまえば、JavaScriptでのクロスドメイン通信を防ぐことができます。
+
+外部とのやり取りはPHPに任せて、JavaScriptは内部との通信のみに役割を分担するわけです。
+
+早速やってみましょう。
+index.htmlと同じフォルダにgooglebooksapi_return.phpというファイルを作成してください。
+やることはシンプルなのでちゃちゃっと書いてしまいましょう。
+
+```
+<?php
+  if(isset($_GET['isbn'])){
+    $url = "https://www.googleapis.com/books/v1/volumes?q=isbn:" . $_GET['isbn'];
+    $data = file_get_contents($url);
+    print $data;
+  }
+```
+
+やっていることは前回やったことを思い出せば簡単です。
+
+データを取得したいURLを```$url```に格納して、```file_get_contents($url)```で取得したデータをprintで出力しています。それだけです。
+
+localhostでこのPHPにアクセスしてみましょう。
+
+![真っ白](./img/005.png)
+
+真っ白ですね。（エラーが発生する人は教えて下さい）
+
+ではURLの```/googlebooksapi_return.php```に```?isbn=9784798043753```を追加して、アクセスしてみてください。
+
+![PHPでJSONを取得](./img/006.png)
+
+ちゃんと表示されていますね。これでPHPからAPIを叩くことが出来ました。そしてこのPHP自体もAPI化しているので、後はこのデータにJavaScriptを繋げていけばいいのです。
+
+先程VisualStudioCodeで書いたJavaScriptのコードを開いてください。```url```のところにはGoogle Books APIのURLが直接指定してありますね。これを先程書いたPHPにアクセスするように書き換えてください。
+
+あえてコードは書きません。自分で考えて変更してみましょう。**ヒントは相対パスです**。
+
 ## Ajaxって何？
 
 さっきから何度もAjaxと言ったり書いたりしていますが、Ajaxとは```Asynchronous JavaScript + XML```の略語です。
@@ -184,7 +227,7 @@ Google Mapは拡大したり縮小したりしても、いちいちページを�
 
 いちいち更新をこちらが待たなくていいのはかなり便利ですよね。
 
-ちなみにXMLと書かれていますが、最近はJSONでサーバとやり取りするのが主流となっています。
+XMLと書かれていますが、最近はJSONでサーバとやり取りするのが主流となっています。
 
 ## 取得したデータを出力しよう
 
@@ -198,20 +241,20 @@ Google Mapは拡大したり縮小したりしても、いちいちページを�
 ```
 isbn = $('#isbn').val();
 $.ajax({
-	url: 'https://www.googleapis.com/books/v1/volumes?q=isbn:' + isbn,
-	type: 'GET',
-	dataType:'json'
+  url: './googlebooksapi_return.php?isbn=' + isbn,
+  type: 'GET',
+  dataType:'json'
 }).done( function(data){
-	const title = data['items'][0]['volumeInfo']['title'];
-	const authors = data['items'][0]['volumeInfo']['authors'][0];
+  const title = data['items'][0]['volumeInfo']['title'];
+  const authors = data['items'][0]['volumeInfo']['authors'][0];
 
-	$('#result').html(title + '<br />' + authors);
+  $('#result').html(title + '<br />' + authors);
 });
 ```
 
-書けたらConsoleで実行するのですが、その前に**検索欄にISBNコードを入力してから、**実行してみてください。
+書けたらConsoleで実行するのですが、その前に**検索欄にISBNコードを入力してから**、実行してみてください。
 
-![HTMLを更新](./img/005.png)
+![HTMLを更新](./img/007.png)
 
 inputタグからでISBNコードを取得して、HTMLが更新されました！
 
@@ -249,52 +292,52 @@ PHPのWebページを更新の仕方とはかなり異なるので、少しだ�
 
 ```
 <script type="text/javascript">
-	$('#btn').on('click', function(){
-		alert('クリックされました！');
-	});
+  $('#btn').on('click', function(){
+    alert('クリックされました！');
+  });
 </script>
 ```
 
 index.htmlを保存して、ページを更新したら、検索ボタンを押してみましょう。
 
-![クリックでアラートで表示される](./img/006.png)
+![クリックでアラートで表示される](./img/008.png)
 
 ボタンをクリックするとアラートが表示されました。
-このコードではセレクタでボタンを指定して、```on```メソッドで```'click'```イベント処理を実装しています。```on```メソッドは、セレクタで取得した要素に、第一引数に指定したイベントが発生すると、第二引数のコールバック関数が実行されます。基本的な構文は下記のとおりです。
+このコードではセレクタでボタンを指定して、```on```メソッドで```'click'```イベント処理を実装しています。```on```メソッドは、セレクタで取得した要素に、第一引数に指定したイベントが発火すると、第二引数のコールバック関数が実行されます。基本的な構文は下記のとおりです。
 
 ```
 $('セレクタ').on('イベント', コールバック関数);
 ```
 
-とにかく、クリックしたらアラートが表示されたということは、このアラートの部分を先程書いた、動的にHTMLを更新するコードに書き換えれば、クリックしたときにHTMLを更新することができるはずです。
+とにかく、クリックしたらアラートが表示されたということは、このアラートの部分を先程書いた、動的にHTMLを更新するコードに書き換えれば、クリックしたときにHTMLを変えることができるはずです。
 
 さっき残しておいたコードは消していませんよね？
 では、さっきのコードをコピーして、```alert('クリックされました！');```の部分を書き換えてしまいましょう！
 
 ```
 <script type="text/javascript">
-	$('#btn').on('click', function(){
-		// alert('クリックされました！'); これは削除する
-		// ↓ここに貼り付ける
-		isbn = $('#isbn').val();
-		$.ajax({
-			url: 'https://www.googleapis.com/books/v1/volumes?q=isbn:' + isbn,
-			type: 'GET',
-			dataType:'json'
-		}).done( function(data){
-			const title = data['items'][0]['volumeInfo']['title'];
-			const authors = data['items'][0]['volumeInfo']['authors'][0];
-
-			$('#result').html(title + '<br />' + authors);
-		});
-	});
+  $('#btn').on('click', function(){
+    // alert('クリックされました！'); これは削除する
+    // ↓ここに貼り付ける
+    isbn = $('#isbn').val();
+    $.ajax({
+      url: './googlebooksapi_return.php?isbn=' + isbn,
+      type: 'GET',
+      dataType:'json'
+    }).done( function(data){
+      const title = data['items'][0]['volumeInfo']['title'];
+      const authors = data['items'][0]['volumeInfo']['authors'][0];
+  
+      $('#result').html(title + '<br />' + authors);
+    });
+  });
 </script>
 ```
 
-ちょっとコードがぐちゃっとするかもしれないので各自コードを整形してください。
+ちょっとコードが乱雑になるかもしれないので各自コードを整形してください。
 では保存してページを更新したら、ISBNコードを入力して、検索をクリックしてみてください。
 
-![Ajax完成！](./img/007.png)
+![Ajax完成！](./img/009.png)
 
 ボタンをクリックしたら、HTMLが書き換わりましたか？ちゃんと更新せずに、本のタイトルと著者が表示されているのを確認してください。これでページを更新せずにAjaxでデータを検索して、HTMLを書き換えることが出来ました！
 
@@ -302,14 +345,14 @@ $('セレクタ').on('イベント', コールバック関数);
 
 どういう流れで処理が起こっているか少しまとめてみましょう。
 
-- ページが読み込まれる
-- クライアントがinputに文字を入力する
-- 検索ボタンを押されたら、イベントが発生してコールバック関数が実行される
-- inputタグの値をDOMからjQueryで取得する
-- 取得した値をURLにつっつけて、jQueryでGoogle Books APIsに送信する
-- 返ってきたJSONデータは自動で連想配列に変換される
-- 取得したいデータを取り出して、DOMにjQueryで書き込む
-- HTMLが更新される
+1. ページが読み込まれる
+1. クライアントがinputに文字を入力する
+1. 検索ボタンをクリックしたら、イベントが発火してコールバック関数が実行される
+1. inputタグの値をDOMからjQueryで取得する
+1. 取得した値をURLにつっつけて、jQueryでGoogle Books APIsに送信する
+1. 返ってきたJSONデータは自動で連想配列に変換される
+1. 取得したいデータを取り出して、DOMにjQueryで書き込む
+1. HTMLが更新される
 
 このような手順を踏んでサイトを書き換えています。
 
