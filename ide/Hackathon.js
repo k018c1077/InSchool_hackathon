@@ -1,3 +1,15 @@
+function modal_show(text) {
+    $("#message").html(text)
+    $(".wrapper").css('opacity',"0.3")
+    $(".modal").fadeIn("0.3s").css('display','flex')
+    
+
+};
+function modal_hide() {
+    $(".wrapper").css('opacity',"1")
+    $(".modal").fadeOut("0.3s")
+
+};
 
 window.onload = function () {
     var grobal_variables = []
@@ -43,18 +55,19 @@ window.onload = function () {
     }
     var modified = ""
     var waiting = 0;
+
     $("#save")[0].onclick = () => { 
         $.cookie("html", html_editor.getSession().getValue(), { expires: 7 })
         $.cookie("js", editor.getSession().getValue(), { expires: 7 })
         $.cookie("css", css_editor.getSession().getValue(), { expires: 7 })
-        alert("保存に成功しました。")
+        modal_show("保存に成功しました。")
 
     }
     $("#load")[0].onclick = () => { 
         html_editor.getSession().setValue($.cookie("html"))
         editor.getSession().setValue($.cookie("js"))
         css_editor.getSession().setValue($.cookie("css"))
-        alert("ロードに成功しました。")
+        modal_show("ロードに成功しました。")
         
     }
 
