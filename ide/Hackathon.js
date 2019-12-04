@@ -67,6 +67,10 @@ window.onload = function () {
         html_editor.getSession().setValue($.cookie("html"))
         editor.getSession().setValue($.cookie("js"))
         css_editor.getSession().setValue($.cookie("css"))
+        $("#preview").html(html_editor.getSession().getValue());
+        $("#custom_css").html(css_editor.getSession().getValue());
+
+
         modal_show("ロードに成功しました。")
         
     }
