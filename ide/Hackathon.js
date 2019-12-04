@@ -1,3 +1,4 @@
+
 window.onload = function () {
     var grobal_variables = []
 
@@ -42,6 +43,21 @@ window.onload = function () {
     }
     var modified = ""
     var waiting = 0;
+    $("#save")[0].onclick = () => { 
+        $.cookie("html", html_editor.getSession().getValue(), { expires: 7 })
+        $.cookie("js", editor.getSession().getValue(), { expires: 7 })
+        $.cookie("css", css_editor.getSession().getValue(), { expires: 7 })
+        alert("保存に成功しました。")
+
+    }
+    $("#load")[0].onclick = () => { 
+        html_editor.getSession().setValue($.cookie("html"))
+        editor.getSession().setValue($.cookie("js"))
+        css_editor.getSession().setValue($.cookie("css"))
+        alert("ロードに成功しました。")
+        
+    }
+
     setInterval(() => {
         let temp = html_editor.getSession().getValue()
         if (modified != temp) { 
