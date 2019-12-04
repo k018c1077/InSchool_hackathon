@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="./jquery-3.4.1.min.js"></script>
+    <script src="src/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="src/ext-language_tools.js"></script>
+    <script src="src/ext-emmet.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+JP&display=swap" rel="stylesheet">
+    <script src="./IDE_min.js"></script>
+    <style id="custom_css"></style>
+    <script id="custom_js"></script>
+    <link rel="stylesheet" href="./main.css">
+
+    <title>授業用IDE</title>
+</head>
+<body>
+    <div class="menu">
+            <ul>
+                    <li><span>Hackathon IDE rev1</span></li>
+                    <li class="menu_button"><span>Menu</span></li>
+                    <li class="menu_button"><span>Edit</span></li>
+            </ul>
+    </div>
+    <div class="menu_dummy"></div>
+   
+    </div>
+    <div class="wrapper">
+           
+    <div class="right_side">
+            <div class="code"id="html_code">write your html here</div>
+            <div id="preview"></div>
+    </div>
+    <div class="coder">
+            <div class="code" id="code">/*write your js here*/</div>
+        
+            <input type="button" value="run" id="run"> 
+            <div class="outputs">
+                <div class="left">
+                        <div class="css_code" id="css_code">/*write your css here*/</div>
+                </div>
+                <div class="right">
+                        <h3>logs</h3>
+                        <ul id="normal_output">
+                        </ul>
+                </div>
+                 
+            </div>
+            </div>
+    </div>
+    
+</body>
+</html>
