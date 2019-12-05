@@ -10,7 +10,10 @@ function modal_hide() {
     $(".modal").fadeOut("0.3s")
 
 };
+function copyrights() {
+    modal_show('Developed by Yukito Azuma<br><span style="font-size:2px">dependencies</span><ul><li>jquery ver 3.4.1</li><li>Ace.js editor</li><li>jquery.cookie.js</li></ul>')
 
+ }
 window.onload = function () {
     var grobal_variables = []
 
