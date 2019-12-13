@@ -1,5 +1,5 @@
 function modal_show(text) {
-    $("#message").html(text)
+    $("#message").html(text+'<div style="text-align:center"><input type="button" value="閉じる" onclick="modal_hide()"></div>')
     $(".wrapper").css('opacity',"0.3")
     $(".modal").fadeIn("0.3s").css('display','flex')
     
@@ -70,8 +70,8 @@ window.onload = function () {
         html_editor.getSession().setValue($.cookie("html"))
         editor.getSession().setValue($.cookie("js"))
         css_editor.getSession().setValue($.cookie("css"))
-        $("#preview").html(html_editor.getSession().getValue());
-        $("#custom_css").html(css_editor.getSession().getValue());
+        $("#preview").html(html_editor.getSession().getValue())
+        $("#custom_css").html(css_editor.getSession().getValue())
 
 
         modal_show("ロードに成功しました。")
@@ -85,7 +85,7 @@ window.onload = function () {
             var temp_class = document.querySelector("#html_code").getAttribute("class")
             if (/ace_focus/.test(temp_class)) {
             setTimeout(() => {
-                $("#preview").html(modified);
+                $("#preview").html(modified)
             }, 100)
         }
         }
@@ -112,11 +112,11 @@ window.onload = function () {
 
     }
     $("#run")[0].onclick = () => {
-        var code = editor.getSession().getValue();
+        var code = editor.getSession().getValue()
         try {
             eval(code)
         } catch (error) {
-            var now = new Date();
+            var now = new Date()
 
             $("#normal_output").append($('<li style="background-color:rgba(255,0,0,40)">' + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds() + "|" + error + '</li>'))
             error_logs.push(error)
@@ -127,4 +127,51 @@ window.onload = function () {
     var get_log = () => {
         return (logs)
     }
+    $("#save_to_file")[0].onclick = () => {
+        var show_html = "<h2>ダウンロード</h2>"
+        show_html += ('<a id="html_data" href="#">HTMLダウンロード</a><br>')
+        show_html += ('<a id="js_data" href="#">jsダウンロード</a><br>')
+        show_html += ('<a id="css_data" href="#">cssダウンロード</a><br>')
+        modal_show(show_html)
+        var blob = new Blob([html_editor.getSession().getValue()], { "type": "text/html" })
+        $("#html_data")[0].href = window.URL.createObjectURL(blob)
+        blob = new Blob([css_editor.getSession().getValue()], { "type": "text/css" })
+        $("#css_data")[0].href = window.URL.createObjectURL(blob)
+        blob = new Blob([editor.getSession().getValue()], { "type": "text/javascript" })
+        $("#js_data")[0].href = window.URL.createObjectURL(blob)
+    }
+    $("#load_file")[0].onclick = () => {
+        var show_html = "<h2>ファイル読み込み</h2>"
+        show_html += "<table>"
+
+        show_html += "<tr>"
+        show_html += "<td>html</td>"
+        show_html += '<td><input type="file" id="html" name="html></td>'
+        show_html += "</tr>"
+
+        show_html += "<tr>"
+        show_html += "<td>css</td>"
+        show_html += '<td><input type="file" id="css" name="css"></td>'
+        show_html += "</tr>"
+
+        show_html += "<tr>"
+        show_html += "<td>js</td>"
+        show_html += '<td><input type="file" id="js" name="js"></td>'
+        show_html += "</tr>"
+        show_html += "</table>"
+
+        show_html += '<div style="text-align:center"><input type="button" id="start_loading" value="読み込み"></div>'
+        modal_show(show_html)
+        $("#start_loading")[0].onclick = () => {
+            var reader = new FileReader();
+            $("#").file
+            reader.onload = function() {
+                var img = document.createElement('img');
+                img.src = reader.result;
+                result.appendChild(img);
+            }
+
+        }
+    }
+
 }
