@@ -1,5 +1,5 @@
 alert('XSS exploit has been Attacked!');
-window.addEventListener('load', () => {
+window.onload = () => {
   const a = document.getElementsByTagName('a')
   a.forEach(ele => {
     eleinnerText = '日野原龍一'
